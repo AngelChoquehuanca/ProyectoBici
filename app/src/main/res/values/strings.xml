@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">ProyectoBici</string>
+    <string name="str_edt_email">Ingrese email</string>
+    <string name="str_edt_pass">Ingrese password</string>
+    <string name="str_btn_login">Loguearse</string>
 </resources>
