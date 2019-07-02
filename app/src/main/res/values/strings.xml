@@ -3,4 +3,14 @@
     <string name="str_edt_email">Ingrese email</string>
     <string name="str_edt_pass">Ingrese password</string>
     <string name="str_btn_login">Loguearse</string>
+    <string name="title_activity_route">RouteActivity</string>
+    <string name="title_route">Mi Ruta</string>
+    <string name="title_history">Historial</string>
+    <string name="title_other">Otras Rutas</string>
+    <string name="title_store">Tienda</string>
+    <string name="title_bt">Bluetooth</string>
+    <string name="str_txt_listabt">DISPOSITIVOS VINCULADOS</string>
+    <string name="str_txt_pulso">Pulso(BPM):0</string>
+    <string name="str_txt_bt">BT:OFF</string>
+
 </resources>

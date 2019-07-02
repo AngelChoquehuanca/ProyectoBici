@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
                             public void run() {
                                 boolean res=obtenerJSON(resultado);
                                 if(res){
-                                    Intent i=new Intent(getApplicationContext(),MainActivity.class);
+                                    Intent i=new Intent(getApplicationContext(),RouteActivity.class);
                                     i.putExtra("cod",4);
                                     startActivity(i);
                                 }else {
