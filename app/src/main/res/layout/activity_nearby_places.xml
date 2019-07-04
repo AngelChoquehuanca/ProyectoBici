@@ -48,20 +48,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="Hospitales" />
 
         <Button
             android:id="@+id/place_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="Gasolineras" />
 
         <Button
             android:id="@+id/place_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="Restaurantes" />
     </LinearLayout>
 </RelativeLayout>

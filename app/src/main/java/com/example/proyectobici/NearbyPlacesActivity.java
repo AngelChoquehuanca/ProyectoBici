@@ -239,7 +239,7 @@ public class NearbyPlacesActivity extends FragmentActivity implements
 
     public void onClickBoton(String s)
     {
-        String hospital = "hospital", school = "school", restaurant = "restaurant";
+        String hospital = "hospital", school = "Gasolineras", restaurant = "restaurant";
         Object transferData[] = new Object[2];
         GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces();
 
@@ -312,7 +312,7 @@ public class NearbyPlacesActivity extends FragmentActivity implements
                 transferData[1] = url;
 
                 getNearbyPlaces.execute(transferData);
-                Toast.makeText(this, "Searching for Nearby Schools...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Searching for Nearby Gasolineras...", Toast.LENGTH_SHORT).show();
                 Toast.makeText(this, "Showing Nearby Schools...", Toast.LENGTH_SHORT).show();
                 break;
 
