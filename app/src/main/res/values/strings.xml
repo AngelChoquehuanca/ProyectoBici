@@ -12,5 +12,10 @@
     <string name="str_txt_listabt">DISPOSITIVOS VINCULADOS</string>
     <string name="str_txt_pulso">Pulso(BPM):0</string>
     <string name="str_txt_bt">BT:OFF</string>
+    <string name="title_activity_mi_ruta">Map</string>
+    <string name="str_txt_latitud">Latitud:</string>
+    <string name="str_txt_longitud">Longitud:</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
