@@ -1,14 +1,20 @@
 package com.example.proyectobici;
 
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,7 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
 //public class MapFragment extends Fragment{
 
     private GoogleMap mMap;
@@ -32,6 +38,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public MapFragment(float latitud, float longitud){
         miLat=latitud;
         miLong=longitud;
+
     }
 
     @Nullable
@@ -81,12 +88,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        } else {
+            // Show rationale and request permission.
+        }
+
 
         // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);
-        LatLng sydney = new LatLng(miLat, miLong);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,19));
+
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnMyLocationClickListener(this);
+        LatLng miPos = new LatLng(miLat, miLong);
+        //mMap.addMarker(new MarkerOptions().position(miPos).title("Yo"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPos,18));
+
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
     /*public void updateMap(float latitud, float longitud){
         //mMap.clear();

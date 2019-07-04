@@ -186,6 +186,9 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
             showGPSDisabledAlertToUser();
         }
 
+
+
+
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         Intent intent=getIntent();
@@ -253,14 +256,11 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
         txtLatitud.setText(String.valueOf(location.getLatitude()));
         txtLongitud.setText(String.valueOf(location.getLongitude()));
         getAddressFromLocation(location, getApplicationContext(), new GeoCoderHandler());
+
         /*fragment = new MapFragment((float)location.getLatitude(), (float)location.getLongitude());
         fm.beginTransaction()
                 .add(R.id.cmpFrameLayoutMap, fragment)
                 .commit();*/
-        fragment = new MapFragment((float)location.getLatitude(), (float)location.getLongitude());
-        fm.beginTransaction()
-                .add(R.id.cmpFrameLayoutMap, fragment)
-                .commit();
     }
 
     @Override
