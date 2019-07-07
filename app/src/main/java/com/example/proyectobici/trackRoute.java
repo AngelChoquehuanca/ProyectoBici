@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 public class trackRoute extends AppCompatActivity implements OnMapReadyCallback {
 //{
-    ArrayList<LatLng> listLocsToDraw;
+    ArrayList<LatLng> listLocsToDraw; //Contendra las posiciones de la ruta
     private LatLng last= new LatLng(-35.016, 143.321);
 
     LocalService mService;
