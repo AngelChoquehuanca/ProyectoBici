@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,6 +48,7 @@ public class trackRoute extends AppCompatActivity implements OnMapReadyCallback 
     private MapFragment mapFragment;
     private FragmentManager fm;
     private MapFragment fragment;
+    //ProgressDialog dialog;
 
 
     @Override
@@ -139,6 +141,8 @@ public class trackRoute extends AppCompatActivity implements OnMapReadyCallback 
             intentFilter.addAction("locationActual");
             registerReceiver(broadcastReceiver, intentFilter);
 
+            //dialog = ProgressDialog.show(this, "Loading", "Please wait...", true);
+
         }
         else{
             btn.setText("START");
@@ -203,6 +207,7 @@ public class trackRoute extends AppCompatActivity implements OnMapReadyCallback 
 
         if(last != null)
         {
+            //dialog.dismiss();
             Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
                     .clickable(false)
                     .add(
