@@ -23,6 +23,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 
 /**
@@ -34,6 +36,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private GoogleMap mMap;
     float miLat;
     float miLong;
+
+    private LatLng last= new LatLng(miLat, miLong);
+
 
     public MapFragment(float latitud, float longitud){
         miLat=latitud;
@@ -124,4 +129,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         LatLng miPos = new LatLng(miLat, miLong);
         mMap.addMarker(new MarkerOptions().position(miPos).title("Yo"));
     }*/
+    PolylineOptions po = null;
+    public void addUbication(LatLng n)
+    {
+        if(po == null)
+        {
+            po = new PolylineOptions();
+            mMap.clear();
+        }
+        po.add(n);
+        if(last != null)
+        {
+            //dialog.dismiss();
+            Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
+                    .clickable(false)
+                    .add(
+                            last,
+                            n
+                    ));
+            last = n;
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(n, 20));
+    }
+
+    public void dibujarRuta(){
+
+        mMap.clear();
+        mMap.addPolyline(po);
+        po = null;
+    }
 }

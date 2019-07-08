@@ -7,22 +7,19 @@
     tools:context=".trackRoute">
 
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/mapp"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
+    <FrameLayout
+        android:id="@+id/cmpFrameLayoutMap2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        map:layout_constraintBottom_toTopOf="@+id/nav_view2"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toBottomOf="@+id/btnTrack"
-        tools:context=".trackRoute" />
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnTrack" />
+
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
