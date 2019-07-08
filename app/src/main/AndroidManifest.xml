@@ -12,11 +12,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.LOCATION_HARDWARE.gps"/>
+    <uses-permission android:name="android.permission.LOCATION_HARDWARE.gps" />
 
     <application
         android:allowBackup="true"
@@ -25,7 +24,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <service
+            android:name=".LocalService"
+            android:enabled="true"
+            android:exported="true"></service>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -36,11 +38,11 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/>
+            android:value="@string/google_maps_key" />
 
         <activity
             android:name=".MiRutaActivity"
-            android:label="@string/title_activity_mi_ruta"></activity>
+            android:label="@string/title_activity_mi_ruta" />
         <activity android:name=".DispositivosBT" />
         <activity
             android:name=".RouteActivity"
