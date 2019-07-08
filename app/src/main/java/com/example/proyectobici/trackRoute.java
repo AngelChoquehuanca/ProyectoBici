@@ -32,15 +32,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class trackRoute extends AppCompatActivity implements OnMapReadyCallback {
-//{
+public class trackRoute extends AppCompatActivity {
     ArrayList<LatLng> listLocsToDraw; //Contendra las posiciones de la ruta
-    private LatLng last= new LatLng(-35.016, 143.321);
 
     LocalService mService;
     boolean mBound = false;
     private final String TAG = "Tracking Activity";
-    private GoogleMap mMap;
+    //private GoogleMap mMap;
     private Button btn;
     boolean mTracking = false;
 
@@ -57,9 +55,9 @@ public class trackRoute extends AppCompatActivity implements OnMapReadyCallback 
         setContentView(R.layout.activity_track_route);
         btn = findViewById(R.id.btnTrack);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapp);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);*/
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,14 +66,14 @@ public class trackRoute extends AppCompatActivity implements OnMapReadyCallback 
             }
         });
 
-        /*fm=getSupportFragmentManager();
+        fm=getSupportFragmentManager();
         fragment=(MapFragment) fm.findFragmentById(R.id.cmpFrameLayoutMap2);
         if (fragment == null) {
             fragment = new MapFragment((float)-16.40499, (float)-71.50177);
             fm.beginTransaction()
                     .add(R.id.cmpFrameLayoutMap2, fragment)
                     .commit();
-        }*/
+        }
 
 
 
@@ -91,7 +89,7 @@ public class trackRoute extends AppCompatActivity implements OnMapReadyCallback 
         @Override
         public void onReceive(Context context, Intent intent) {
             LatLng actual = intent.getParcelableExtra("Data");
-            Log.i(TAG, "Se ha recivido "+ actual.latitude);
+            int i = Log.i(TAG, "Se ha recivido " + actual);
             drwMarker(actual);
         }
     };
@@ -148,7 +146,8 @@ public class trackRoute extends AppCompatActivity implements OnMapReadyCallback 
             btn.setText("START");
             mTracking = false;
             mService.stopTracking();
-            mMap.clear();
+            //mMap.clear();
+            fragment.dibujarRuta();
             unregisterReceiver(broadcastReceiver);
         }
 
@@ -204,30 +203,8 @@ public class trackRoute extends AppCompatActivity implements OnMapReadyCallback 
 
     public void drwMarker(LatLng nueva){
         listLocsToDraw.add(nueva);
-
-        if(last != null)
-        {
-            //dialog.dismiss();
-            Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
-                    .clickable(false)
-                    .add(
-                            last,
-                            nueva
-                    ));
-            last = nueva;
-        }
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nueva, 20));
+        fragment.addUbication(nueva);
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-        //mMap.addPolyline(polyline1);
-    }
 }

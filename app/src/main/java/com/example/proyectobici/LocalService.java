@@ -91,8 +91,9 @@ public class LocalService extends Service {
         if (mLocationManager != null) {
             try {
                 mLocationManager.removeUpdates(mLocationListener);
+                Log.i(TAG, "eliminado listener: "+mLocationListener);
             } catch (Exception ex) {
-                Log.i(TAG, "fail to remove location listners, ignore", ex);
+                Log.e(TAG, "fail to remove location listners, ignore", ex);
             }
         }
     }
