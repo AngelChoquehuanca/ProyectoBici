@@ -48,6 +48,8 @@
         <activity
             android:name=".RouteActivity"
             android:label="@string/title_activity_route" />
+        <activity
+            android:name=".SiginActivity"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
