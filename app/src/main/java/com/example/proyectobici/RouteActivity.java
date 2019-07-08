@@ -203,10 +203,10 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
 
                         if (endOfLineIndex > 0) {
                             String dataInPrint = DataStringIN.substring(0, endOfLineIndex);
-                            String pulso = dataInPrint.substring(0, dataInPrint.indexOf("-"));
-                            String bt = dataInPrint.substring(dataInPrint.indexOf("-"), endOfLineIndex);
-                            txtPulso.setText("Pulso(BPM): " + pulso);//<-<- PARTE A MODIFICAR >->->
-                            txtBT.setText("BT: " + bt);
+                            String est = dataInPrint.substring(0, dataInPrint.indexOf("-"));
+                            String pulso = dataInPrint.substring(dataInPrint.indexOf("-")+1, endOfLineIndex);
+                            txtPulso.setText("Estado: " + est);//<-<- PARTE A MODIFICAR >->->
+                            txtBT.setText("Pulso(BPM): " + pulso);
                             DataStringIN.delete(0, DataStringIN.length());
                         }
                     }

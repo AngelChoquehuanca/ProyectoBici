@@ -2,16 +2,35 @@
     <string name="app_name">ProyectoBici</string>
     <string name="str_edt_email">Ingrese email</string>
     <string name="str_edt_pass">Ingrese password</string>
-    <string name="str_btn_login">Loguearse</string>
+    <string name="str_btn_login">Iniciar Sesión</string>
+    <string name="str_btn_sigin">Registrarse</string>
+    
+    <string name="str_txt_datos_ingreso">Datos de Ingreso</string>
+    <string name="str_txt_email">Ingrese Correo Electrónico:</string>
+    <string name="str_sigin_email">e.g. bici@bici.com</string>
+    <string name="str_txt_password">Ingrese su Contraseña:</string>
+    <string name="str_sigin_password">caracteres numéricos y alfanuméricos</string>
+    <string name="str_txt_datos_personales">Datos Personales</string>
+    <string name="str_txt_nombre">Ingrese Nombre:</string>
+    <string name="str_sigin_nombre">e.g. Bici</string>
+    <string name="str_txt_direccion">Ingrese su Dirección:</string>
+    <string name="str_sigin_direccion">e.g. Avenida Bici N 777</string>
+    <string name="str_txt_nacimiento">Ingrese Fecha de Nacimiento:</string>
+    <string name="str_sigin_nacimiento">e.g. 2000-01-01</string>
+
     <string name="title_activity_route">RouteActivity</string>
     <string name="title_route">Mi Ruta</string>
     <string name="title_history">Historial</string>
     <string name="title_other">Otras Rutas</string>
     <string name="title_store">Tienda</string>
     <string name="title_bt">Bluetooth</string>
+
+    <string name="title_check">Aceptar</string>
+    <string name="title_cancel">Cancelar</string>
+
     <string name="str_txt_listabt">DISPOSITIVOS VINCULADOS</string>
-    <string name="str_txt_pulso">Pulso(BPM):0</string>
-    <string name="str_txt_bt">BT:OFF</string>
+    <string name="str_txt_pulso">Estado:0</string>
+    <string name="str_txt_bt">Pulso(BPM):0</string>
     <string name="title_activity_mi_ruta">Map</string>
     <string name="str_txt_latitud">Latitud:</string>
     <string name="str_txt_longitud">Longitud:</string>

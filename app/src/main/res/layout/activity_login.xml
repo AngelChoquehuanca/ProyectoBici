@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/fondo"
+    android:foregroundTintMode="multiply"
     tools:context=".LoginActivity">
 
     <EditText
@@ -21,7 +22,7 @@
         app:layout_constraintBottom_toTopOf="@+id/cmpEdtPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="Autofill"/>
+        tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/cmpEdtPassword"
@@ -37,7 +38,7 @@
         app:layout_constraintBottom_toTopOf="@+id/cmpBtnLoguear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="Autofill"/>
+        tools:ignore="Autofill" />
 
     <Button
         android:id="@+id/cmpBtnLoguear"
@@ -51,6 +52,21 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#FFFFFF"
         android:textColorHighlight="#00FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/cmpBtnRegistrar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/cmpBtnRegistrar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:background="#2B1DEC"
+        android:text="@string/str_btn_sigin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
