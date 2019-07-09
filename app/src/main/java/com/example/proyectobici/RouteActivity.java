@@ -6,9 +6,11 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -17,11 +19,14 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.location.Geocoder;
+
+import java.util.ArrayList;
 import java.util.Locale;
 import android.location.Address;
 import java.util.List;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,11 +38,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +55,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-public class RouteActivity extends AppCompatActivity implements LocationListener{
+public class RouteActivity extends AppCompatActivity {
     private FrameLayout frmMap;
     private MapFragment mapFragment;
     private FragmentManager fm;
@@ -73,6 +81,17 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
     private Location location;
     private final int REQUEST_LOCATION = 200;
     private static final String TAG = "RouteActivity";
+
+
+    /**
+     * Variables para Tracking
+     */
+    ArrayList<LatLng> listLocsToDraw; //Contendra las posiciones de la ruta
+    LocalService mService;
+    boolean mBound = false;
+    private Button btnTrack;
+    private Button btnStop;
+    boolean mTracking = false;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -116,6 +135,7 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
                 try {
                     btSocket.close();
                 } catch (IOException e2) {
+                    Log.e(TAG, "error"+e2);
                 }
             }
             myConexionBT = new ConnectedThread(btSocket);
@@ -132,7 +152,7 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
                 btSocket.close();
             }
         } catch (IOException e2) {
-
+            Log.i(TAG, "error: "+e2);
         }
     }
 
@@ -140,7 +160,6 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
-
 
         /*mapFragment=new MapFragment();
         FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
@@ -167,7 +186,7 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
 
 
 
-        locationManager = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
+        /*locationManager = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(RouteActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
@@ -175,8 +194,8 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
             if (locationManager != null) {
                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
-        }
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        }*/
+        /*if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (location != null) {
                 txtLatitud.setText(String.valueOf(location.getLatitude()));
                 txtLongitud.setText(String.valueOf(location.getLongitude()));
@@ -184,7 +203,7 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
             }
         } else {
             showGPSDisabledAlertToUser();
-        }
+        }*/
 
 
 
@@ -216,6 +235,24 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
             btAdapter = BluetoothAdapter.getDefaultAdapter();
             VerificarEstadoBT();
         }
+
+        btnTrack = findViewById(R.id.btn_track);
+        btnStop = findViewById(R.id.btn_stop);
+        btnStop.setEnabled(false);
+
+        btnTrack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onButtonTrackClick();
+            }
+        });
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onButtonStopClick();
+            }
+        });
+
     }
 
     @Override
@@ -247,43 +284,6 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
             } else {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, 1);
-            }
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        txtLatitud.setText(String.valueOf(location.getLatitude()));
-        txtLongitud.setText(String.valueOf(location.getLongitude()));
-        getAddressFromLocation(location, getApplicationContext(), new GeoCoderHandler());
-
-        /*fragment = new MapFragment((float)location.getLatitude(), (float)location.getLongitude());
-        fm.beginTransaction()
-                .add(R.id.cmpFrameLayoutMap, fragment)
-                .commit();*/
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-        if (s.equals(LocationManager.GPS_PROVIDER)) {
-            showGPSDisabledAlertToUser();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_LOCATION) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             }
         }
     }
@@ -401,5 +401,98 @@ public class RouteActivity extends AppCompatActivity implements LocationListener
                 finish();
             }
         }
+    }
+
+
+    /** Called when a button is clicked (the button in the layout file attaches to
+     * this method with the android:onClick attribute) */
+    public void onButtonTrackClick() {
+        Log.i(TAG, "boton presionado "+mService);
+
+        if (!checkLocationPermission()) { //verifica los permisos
+            Log.e(TAG, "No hay permisos "+mService);
+            Toast.makeText(getBaseContext(), "No cuenta con permisos", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!mBound) //Veridica si existe el servicio
+        {
+            iniciarServicio();
+            mTracking = true;
+            listLocsToDraw = new ArrayList<>();
+            return;
+        }
+        if(!mTracking)
+        {
+            btnTrack.setText("PAUSE");
+            mTracking = true;
+            mService.startTracking(fragment);
+        }
+        else{
+            btnTrack.setText("REANUDAR");
+            mTracking = false;
+            mService.stopTracking();
+        }
+
+    }
+    public void onButtonStopClick(){
+        if (mBound) {
+            btnTrack.setText("TRACKING");
+            mService.stopTracking();
+            unbindService(mConnection);
+            mBound = false;
+            mTracking = false;
+            btnStop.setEnabled(false);
+            fragment.terminarRuta();
+        }
+    }
+    public void iniciarServicio(){
+        Intent intent = new Intent(this, LocalService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        btnTrack.setText("PAUSE");
+        btnStop.setEnabled(true);
+    }
+
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            Log.i(TAG, "Servicio conectado"+mService);
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LocalService.LocalBinder binder = (LocalService.LocalBinder) service;
+            RouteActivity.this.mService = binder.getService();
+            RouteActivity.this.mBound = true;
+            listLocsToDraw = new ArrayList<>();
+            mService.startTracking(fragment);
+            fragment.limpiarMapa();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            Log.i(TAG, "Servicio desconectado"+mService);
+            mBound = false;
+        }
+    };
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+        }
+    }
+    public boolean checkLocationPermission()
+    {
+        String permission = "android.permission.ACCESS_FINE_LOCATION";
+        int res = this.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
     }
 }
