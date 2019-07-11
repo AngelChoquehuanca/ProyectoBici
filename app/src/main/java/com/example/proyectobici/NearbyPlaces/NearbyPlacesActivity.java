@@ -1,4 +1,4 @@
-package com.example.proyectobici;
+package com.example.proyectobici.NearbyPlaces;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.proyectobici.NearbyPlaces.GetNearbyPlaces;
+import com.example.proyectobici.R;
 import com.google.android.gms.location.LocationListener;
 
 

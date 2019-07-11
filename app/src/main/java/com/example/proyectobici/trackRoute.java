@@ -251,7 +251,7 @@ public class trackRoute extends AppCompatActivity {
         if(!mTracking)
         {
             btn.setText("STOP TRACKING");
-            mService.startTracking();
+            mService.startTracking(fragment);
             mTracking = true;
             listLocsToDraw = new ArrayList<>();
 
@@ -267,7 +267,7 @@ public class trackRoute extends AppCompatActivity {
             mTracking = false;
             mService.stopTracking();
             //mMap.clear();
-            fragment.dibujarRuta();
+            //fragment.dibujarRuta();
             unregisterReceiver(broadcastReceiver);
         }
 

@@ -153,10 +153,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(n, 20));
     }
 
-    public void dibujarRuta(){
+    public void terminarRuta(){
 
         mMap.clear();
-        mMap.addPolyline(po);
+        if(po!=null)
+            mMap.addPolyline(po);
         po = null;
+    }
+    public void limpiarMapa(){
+        mMap.clear();
     }
 }
