@@ -158,6 +158,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMap.clear();
         if(po!=null)
             mMap.addPolyline(po);
+
+        //Aqui deberia guardarla ruta
+        sendRoute sr = new sendRoute();
+        sr.execute();
+
         po = null;
     }
     public void limpiarMapa(){
