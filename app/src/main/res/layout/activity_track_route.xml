@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toTopOf="@+id/nav_view2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnTrack" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 
 
@@ -36,16 +36,31 @@
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
-    <Button
-        android:id="@+id/btnTrack"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="TRACKING"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/cmpRoutePulse"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="4"
+            android:text="@string/str_txt_bt"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+        <Button
+            android:id="@+id/btnTrack"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:text="TRACKING" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

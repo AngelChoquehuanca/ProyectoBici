@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity{
     private EditText edtPassword;
     private Button btnLoguear;
     private Button btnRegistrar;
+    private int codigo=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class LoginActivity extends AppCompatActivity{
                                 boolean res=obtenerJSON(resultado);
                                 if(res){
                                     Intent i=new Intent(getApplicationContext(),RouteActivity.class);
-                                    i.putExtra("cod",4);
+                                    i.putExtra("codigo",codigo);
                                     startActivity(i);
                                 }else {
                                     Toast.makeText(getApplicationContext(),"Usuario o Password Incorrecto",Toast.LENGTH_SHORT).show();
@@ -111,7 +113,9 @@ public class LoginActivity extends AppCompatActivity{
         boolean res=false;
         try {
             JSONArray json=new JSONArray(response);
-            Toast.makeText(this, json.toString(), Toast.LENGTH_SHORT).show();
+
+            codigo=Integer.parseInt(((JSONObject)json.get(0)).getString("id_login"));
+            //Toast.makeText(this, "Codigo:"+codigo, Toast.LENGTH_SHORT).show();
             if (json.length()>0){
                 res=true;
             }

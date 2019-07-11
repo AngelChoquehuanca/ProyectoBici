@@ -44,7 +44,7 @@ public class DispositivosBT extends AppCompatActivity {
                 String info=((TextView) view).getText().toString();
                 String address=info.substring(info.length()-17);
 
-                Intent it=new Intent(DispositivosBT.this, RouteActivity.class);
+                Intent it=new Intent(DispositivosBT.this, trackRoute.class);
                 it.putExtra(EXTRA_DEVICE_ADDRESS, address);
                 startActivity(it);
             }

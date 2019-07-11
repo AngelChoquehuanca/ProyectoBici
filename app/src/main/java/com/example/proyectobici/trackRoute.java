@@ -1,11 +1,15 @@
 package com.example.proyectobici;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,11 +18,16 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,7 +39,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class trackRoute extends AppCompatActivity {
     ArrayList<LatLng> listLocsToDraw; //Contendra las posiciones de la ruta
@@ -48,12 +61,24 @@ public class trackRoute extends AppCompatActivity {
     private MapFragment fragment;
     //ProgressDialog dialog;
 
+    private TextView txtPulso;
+
+    Handler bluetoothIn;
+    final int handlerState=0;
+    private BluetoothAdapter btAdapter=null;
+    private BluetoothSocket btSocket=null;
+    private ConnectedThread myConexionBT;
+    private StringBuilder DataStringIN = new StringBuilder();
+
+    private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static String address=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_route);
         btn = findViewById(R.id.btnTrack);
+        txtPulso=(TextView)findViewById(R.id.cmpRoutePulse);
 
         /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapp);
@@ -75,10 +100,105 @@ public class trackRoute extends AppCompatActivity {
                     .commit();
         }
 
+        Intent intent=getIntent();
+        if (intent.hasExtra(DispositivosBT.EXTRA_DEVICE_ADDRESS)) {
+            bluetoothIn = new Handler() {
+                public void handleMessage(android.os.Message msg) {
+                    if (msg.what == handlerState) {
+                        String readMessage = (String) msg.obj;
+                        DataStringIN.append(readMessage);
 
+                        int endOfLineIndex = DataStringIN.indexOf("#");
+
+                        if (endOfLineIndex > 0) {
+                            String dataInPrint = DataStringIN.substring(0, endOfLineIndex);
+                            String est = dataInPrint.substring(0, dataInPrint.indexOf("-"));
+                            String pulso = dataInPrint.substring(dataInPrint.indexOf("-")+1, endOfLineIndex);
+                            txtPulso.setText("Pulso(BPM): " + pulso);
+                            Log.i("trackRoute","Pulso - "+pulso);
+                            DataStringIN.delete(0, DataStringIN.length());
+                        }
+                    }
+                }
+            };
+
+            btAdapter = BluetoothAdapter.getDefaultAdapter();
+            VerificarEstadoBT();
+        }
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view2);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent=getIntent();
+        if (intent.hasExtra(DispositivosBT.EXTRA_DEVICE_ADDRESS)) {
+            address = intent.getStringExtra(DispositivosBT.EXTRA_DEVICE_ADDRESS);
+            BluetoothDevice device = btAdapter.getRemoteDevice(address);
+            try {
+                btSocket = createBluetoothSocket(device);
+            } catch (IOException e) {
+                Toast.makeText(getBaseContext(), "La creacion del Socket fallo", Toast.LENGTH_SHORT).show();
+            }
+
+            try {
+                btSocket.connect();
+            } catch (IOException e) {
+                try {
+                    btSocket.close();
+                } catch (IOException e2) {
+                }
+            }
+            myConexionBT = new ConnectedThread(btSocket);
+            myConexionBT.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try
+        {
+            if (btSocket!=null) {
+                btSocket.close();
+            }
+        } catch (IOException e2) {
+
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_acciones, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id=item.getItemId();
+        if (id==R.id.cmpItemBT){
+            Intent it=new Intent(trackRoute.this, DispositivosBT.class);
+            startActivity(it);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private BluetoothSocket createBluetoothSocket(BluetoothDevice device)throws IOException {
+        return device.createRfcommSocketToServiceRecord(BTMODULEUUID);
+    }
+
+    private void VerificarEstadoBT() {
+
+        if(btAdapter==null) {
+            Toast.makeText(getBaseContext(), "El dispositivo no soporta bluetooth", Toast.LENGTH_LONG).show();
+        } else {
+            if (btAdapter.isEnabled()) {
+            } else {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, 1);
+            }
+        }
     }
 
 
@@ -206,5 +326,53 @@ public class trackRoute extends AppCompatActivity {
         fragment.addUbication(nueva);
     }
 
+    private class ConnectedThread extends Thread
+    {
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
 
+        public ConnectedThread(BluetoothSocket socket)
+        {
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+            try
+            {
+                tmpIn = socket.getInputStream();
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) { }
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run()
+        {
+            byte[] buffer = new byte[256];
+            int bytes;
+
+            // Se mantiene en modo escucha para determinar el ingreso de datos
+            while (true) {
+                try {
+                    bytes = mmInStream.read(buffer);
+                    String readMessage = new String(buffer, 0, bytes);
+                    // Envia los datos obtenidos hacia el evento via handler
+                    bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                } catch (IOException e) {
+                    break;
+                }
+            }
+        }
+        //Envio de trama
+        public void write(String input)
+        {
+            try {
+                mmOutStream.write(input.getBytes());
+            }
+            catch (IOException e)
+            {
+                //si no es posible enviar datos se cierra la conexión
+                Toast.makeText(getBaseContext(), "La Conexión fallo", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
 }
