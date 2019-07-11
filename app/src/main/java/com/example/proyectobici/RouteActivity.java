@@ -179,6 +179,8 @@ public class RouteActivity extends AppCompatActivity {
                     .commit();
         }
 
+        Button bt2 = findViewById(R.id.button2);
+
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         mTextMessage = findViewById(R.id.message);
@@ -253,6 +255,14 @@ public class RouteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onButtonStopClick();
+            }
+        });
+
+
+        bt2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment.historial();
             }
         });
 

@@ -9,14 +9,47 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.bson.Document;
+
 import java.util.ArrayList;
 
+// Base Stitch Packages
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.mongodb.stitch.android.core.Stitch;
+import com.mongodb.stitch.android.core.StitchAppClient;
+
+// Packages needed to interact with MongoDB and Stitch
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+
+// Necessary component for working with MongoDB Mobile
+import com.mongodb.stitch.android.services.mongodb.local.LocalMongoDbService;
+
+
+
+
 public class HistorialActivity extends AppCompatActivity {
+
+    // Create the default Stitch Client
+    final StitchAppClient client =
+            Stitch.initializeDefaultAppClient("cyclistapp-kwqhc");
+
+    // Create a Client for MongoDB Mobile (initializing MongoDB Mobile)
+    final MongoClient mobileClient =
+            client.getServiceClient(LocalMongoDbService.clientFactory);
+
+    PolylineOptions po;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historial);
+
+        MongoCollection<Document> localCollection =
+                mobileClient.getDatabase("CyclistDB").getCollection("Collection_1");
+
+
 
 
         final ListView list = findViewById(R.id.historial);

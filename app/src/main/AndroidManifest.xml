@@ -47,11 +47,11 @@
             android:name=".MiRutaActivity"
             android:label="@string/title_activity_mi_ruta"></activity>
         <activity android:name=".DispositivosBT" />
-        <activity android:name=".RouteActivity"
+        <activity android:name=".LoginActivity"
             android:label="@string/title_activity_route" />
         <activity android:name=".SiginActivity"/>
         <activity android:name=".trackRoute" />
-        <activity android:name=".LoginActivity"
+        <activity android:name=".RouteActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
