@@ -9,29 +9,46 @@
 
     <TextView
         android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/title_route"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="127dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="149dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/poiret_one"
+        android:textAlignment="center"
+        android:textColor="#FA847A"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_stop"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Mi ruta" />
 
     <TextView
         android:id="@+id/cmpTxtPulso"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="161dp"
+        android:fontFamily="@font/poiret_one"
         android:text="@string/str_txt_pulso"
+        android:textColor="#1B1A1A"
+        app:layout_constraintEnd_toStartOf="@+id/cmpTxtLatitud"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message" />
+        app:layout_constraintTop_toBottomOf="@+id/cmpFrameLayoutMap" />
 
     <TextView
         android:id="@+id/cmpTxtBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/poiret_one"
         android:text="@string/str_txt_bt"
+        android:textColor="#1B1A1A"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cmpTxtPulso" />
 
@@ -39,17 +56,27 @@
         android:id="@+id/cmpTxtLatitud"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="228dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="136dp"
+        android:fontFamily="@font/poiret_one"
         android:text="@string/str_txt_latitud"
+        android:textColor="#1B1A1A"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cmpTxtBT" />
+        app:layout_constraintTop_toBottomOf="@+id/cmpFrameLayoutMap" />
 
     <TextView
         android:id="@+id/cmpTxtLongitud"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="228dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="124dp"
+        android:fontFamily="@font/poiret_one"
         android:text="@string/str_txt_longitud"
+        android:textColor="#1B1A1A"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cmpTxtLatitud" />
 
@@ -58,12 +85,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="80dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cmpTxtLongitud" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_track" />
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -80,30 +109,34 @@
 
     <Button
         android:id="@+id/btn_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/stop"
+        android:layout_width="67dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="84dp"
+        android:backgroundTint="#FAF18181"
+        android:drawableBottom="@drawable/ic_stop_black_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_track"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/tracking"
+        android:layout_width="70dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="12dp"
+        android:backgroundTint="#EB86D0DA"
+        android:drawableBottom="@drawable/ic_play_arrow_black_24dp"
         app:layout_constraintEnd_toStartOf="@+id/btn_stop"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/message" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Button"
+        android:layout_width="68dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="12dp"
+        android:backgroundTint="#B9C0BCBA"
+        android:drawableBottom="@drawable/ic_bar"
         app:layout_constraintEnd_toStartOf="@+id/btn_track"
         app:layout_constraintTop_toTopOf="parent" />
 
