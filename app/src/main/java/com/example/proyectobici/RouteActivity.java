@@ -450,7 +450,6 @@ public class RouteActivity extends AppCompatActivity {
             mBound = false;
             mTracking = false;
             btnStop.setEnabled(false);
-            unregisterReceiver(broadcastReceiver);
 
             // termina tracking y recibe el array list de la ruta
             listLocsToDraw = fragment.terminarRuta();
@@ -459,6 +458,7 @@ public class RouteActivity extends AppCompatActivity {
     }
     public void guardarRuta(){
         //aqui deberia llamar al senRoute y guarddar la ruta con htt url connection
+        //(listLocsToDraw)
     }
     public void iniciarServicio(){
         Intent intent = new Intent(this, LocalService.class);
