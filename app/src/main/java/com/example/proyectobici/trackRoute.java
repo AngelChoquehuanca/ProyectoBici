@@ -264,6 +264,7 @@ public class trackRoute extends AppCompatActivity {
         }
         else{
             btn.setText("START");
+            //Toast.makeText(this,listLocsToDraw.toString(),Toast.LENGTH_SHORT).show();
             mTracking = false;
             mService.stopTracking();
             //mMap.clear();

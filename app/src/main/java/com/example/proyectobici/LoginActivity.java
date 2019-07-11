@@ -29,12 +29,16 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity implements DownloadCallback{
+    private final String TAG="LoginActivity";
     private EditText edtEmail;
     private EditText edtPassword;
     private Button btnLoguear;
     private Button btnRegistrar;
     private int codigo=0;
+
+    private NetworkFragment mNetworkFragment;
+    private boolean mDownloading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +49,17 @@ public class LoginActivity extends AppCompatActivity{
         btnLoguear=(Button)findViewById(R.id.cmpBtnLoguear);
         btnRegistrar=(Button)findViewById(R.id.cmpBtnRegistrar);
 
+        //mNetworkFragment = NetworkFragment.getInstance(getFragmentManager(), "https://afternoon-mesa-67144.herokuapp.com/rest/login.php");
         btnLoguear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Thread tr=new Thread(){
+                String email=edtEmail.getText().toString();
+                String pass=edtPassword.getText().toString();
+                Log.i(TAG,"Iniciando Descarga");
+                mNetworkFragment = NetworkFragment.getInstance(getFragmentManager(), "https://afternoon-mesa-67144.herokuapp.com/rest/login.php?log_email="+email+"&log_pass="+pass);
+                startDownload();
+                //startDownload();
+                /*Thread tr=new Thread(){
                     @Override
                     public void run() {
                         String email=edtEmail.getText().toString();
@@ -70,7 +80,7 @@ public class LoginActivity extends AppCompatActivity{
                         });
                     }
                 };
-                tr.start();
+                tr.start();*/
             }
         });
 
@@ -124,5 +134,67 @@ public class LoginActivity extends AppCompatActivity{
         }
 
         return res;
+    }
+
+    private void startDownload() {
+        if (!mDownloading && mNetworkFragment != null) {
+            // Execute the async download.
+            mNetworkFragment.startDownload();
+            mDownloading = true;
+        }
+    }
+
+    @Override
+    public void updateFromDownload(String result) {
+        if (result != null) {
+            //mDataText.setText(result);
+            Log.i(TAG,result);
+            //finishDownloading();
+            if(result.equals("false")) {
+                Toast.makeText(this,"Usuario o contraseña incorrectos",Toast.LENGTH_SHORT).show();
+            }else{
+                Intent i = new Intent(getApplicationContext(), RouteActivity.class);
+                i.putExtra("codigo", codigo);
+                startActivity(i);
+            }
+        } else {
+            //mDataText.setText(getString(R.string.connection_error));
+        }
+    }
+
+    @Override
+    public NetworkInfo getActiveNetworkInfo() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo;
+    }
+
+    @Override
+    public void onProgressUpdate(int progressCode, int percentComplete) {
+        switch(progressCode) {
+            // You can add UI behavior for progress updates here.
+            case Progress.ERROR:
+                break;
+            case Progress.CONNECT_SUCCESS:
+                break;
+            case Progress.GET_INPUT_STREAM_SUCCESS:
+                break;
+            case Progress.PROCESS_INPUT_STREAM_IN_PROGRESS:
+                Log.i(TAG,"" + percentComplete + "%");
+                //mDataText.setText("" + percentComplete + "%");
+                break;
+            case Progress.PROCESS_INPUT_STREAM_SUCCESS:
+                break;
+        }
+    }
+
+    @Override
+    public void finishDownloading() {
+        mDownloading = false;
+        if (mNetworkFragment != null) {
+            mNetworkFragment.cancelDownload();
+        }
+        mNetworkFragment.onDestroy();
     }
 }

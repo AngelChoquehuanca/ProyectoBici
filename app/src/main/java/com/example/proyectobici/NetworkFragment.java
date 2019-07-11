@@ -13,9 +13,15 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -31,6 +37,7 @@ public class NetworkFragment extends Fragment {
     private DownloadCallback mCallback;
     private DownloadTask mDownloadTask;
     private String mUrlString;
+    private static NetworkFragment networkFragment=null;
 
     /**
      * Static initializer for NetworkFragment that sets the URL of the host it will be downloading
@@ -42,28 +49,43 @@ public class NetworkFragment extends Fragment {
         // the config change and has not finished yet.
         // The NetworkFragment is recoverable via this method because it calls
         // setRetainInstance(true) upon creation.
-        NetworkFragment networkFragment = (NetworkFragment) fragmentManager
+        networkFragment = (NetworkFragment) fragmentManager
                 .findFragmentByTag(NetworkFragment.TAG);
-        if (networkFragment == null) {
+
+
+        //if (networkFragment == null) {
             networkFragment = new NetworkFragment();
             Bundle args = new Bundle();
             args.putString(URL_KEY, url);
             networkFragment.setArguments(args);
             fragmentManager.beginTransaction().add(networkFragment, TAG).commit();
-        }
+            //networkFragment.mUrlString=URL_KEY;
+            //Log.i(TAG,url);
+        //}
+
+        /*networkFragment = new NetworkFragment();
+        Bundle args = new Bundle();
+        args.putString(URL_KEY, url);
+        networkFragment.setArguments(args);
+        fragmentManager.beginTransaction().add(networkFragment, TAG).commit();*/
+        //Log.i(TAG,"URL vacia: "+(URL_KEY==null));
         return networkFragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Retain this Fragment across configuration changes in the host Activity.
         setRetainInstance(true);
-        mUrlString = getArguments().getString(URL_KEY);
+        //mUrlString = getArguments().getString(URL_KEY);
+        //networkFragment=this;
+        Log.i(TAG,"onCreate");
     }
 
     @Override
     public void onAttach(Context context) {
+        Log.i(TAG,"onAttach");
         super.onAttach(context);
         // Host Activity will handle callbacks from task.
         mCallback = (DownloadCallback)context;
@@ -71,15 +93,19 @@ public class NetworkFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        Log.i(TAG,"onDetach");
         super.onDetach();
         // Clear reference to host Activity.
+        //networkFragment=null;
         mCallback = null;
     }
 
     @Override
     public void onDestroy() {
+        Log.i(TAG,"onDestroy");
         // Cancel task when Fragment is destroyed.
         cancelDownload();
+        networkFragment=null;
         super.onDestroy();
     }
 
@@ -87,6 +113,9 @@ public class NetworkFragment extends Fragment {
      * Start non-blocking execution of DownloadTask.
      */
     public void startDownload() {
+        //Log.i(TAG,"URL vacia: "+(mUrlString==null));
+        mUrlString = getArguments().getString(URL_KEY);
+        Log.i(TAG,mUrlString);
         cancelDownload();
         mDownloadTask = new DownloadTask();
         mDownloadTask.execute(mUrlString);
@@ -129,6 +158,7 @@ public class NetworkFragment extends Fragment {
          */
         @Override
         protected void onPreExecute() {
+            Log.i(TAG,"onPreExecute");
             if (mCallback != null) {
                 NetworkInfo networkInfo = mCallback.getActiveNetworkInfo();
                 if (networkInfo == null || !networkInfo.isConnected() ||
@@ -146,6 +176,7 @@ public class NetworkFragment extends Fragment {
          */
         @Override
         protected Result doInBackground(String... urls) {
+            Log.i(TAG,"doInBackground");
             Result result = null;
             if (!isCancelled() && urls != null && urls.length > 0) {
                 String urlString = urls[0];
@@ -169,10 +200,12 @@ public class NetworkFragment extends Fragment {
          */
         @Override
         protected void onProgressUpdate(Integer... values) {
+            Log.i(TAG,"onProgressUpdate");
             super.onProgressUpdate(values);
             if (values.length >= 2) {
                 mCallback.onProgressUpdate(values[0], values[1]);
             }
+
         }
 
         /**
@@ -180,6 +213,7 @@ public class NetworkFragment extends Fragment {
          */
         @Override
         protected void onPostExecute(Result result) {
+            Log.i(TAG,"onPostExecute");
             if (result != null && mCallback != null) {
                 if (result.mException != null) {
                     mCallback.updateFromDownload(result.mException.getMessage());
@@ -189,7 +223,6 @@ public class NetworkFragment extends Fragment {
                 }
                 mCallback.finishDownloading();
             }
-
         }
 
         /**
@@ -208,6 +241,9 @@ public class NetworkFragment extends Fragment {
             InputStream stream = null;
             HttpsURLConnection connection = null;
             String result = null;
+            StringBuilder resul=null;
+            String linea="";
+            int respuesta=0;
             try {
                 connection = (HttpsURLConnection) url.openConnection();
                 // Timeout for reading InputStream arbitrarily set to 3000ms.
@@ -222,7 +258,18 @@ public class NetworkFragment extends Fragment {
                 // Open communications link (network traffic occurs here).
                 connection.connect();
                 publishProgress(DownloadCallback.Progress.CONNECT_SUCCESS);
-                int responseCode = connection.getResponseCode();
+
+                respuesta=connection.getResponseCode();
+                resul=new StringBuilder();
+                if(respuesta==HttpURLConnection.HTTP_OK){
+                    InputStream in=new BufferedInputStream(connection.getInputStream());
+                    BufferedReader reader=new BufferedReader(new InputStreamReader(in));
+                    while((linea=reader.readLine())!=null){
+                        resul.append(linea);
+                    }
+                }
+                result=obtenerJSON(resul.toString());
+                /*int responseCode = connection.getResponseCode();
                 if (responseCode != HttpsURLConnection.HTTP_OK) {
                     throw new IOException("HTTP error code: " + responseCode);
                 }
@@ -233,7 +280,8 @@ public class NetworkFragment extends Fragment {
                     // Converts Stream to String with max length of 500.
                     result = readStream(stream, 500);
                     publishProgress(DownloadCallback.Progress.PROCESS_INPUT_STREAM_SUCCESS, 0);
-                }
+                }*/
+
             } finally {
                 // Close Stream and disconnect HTTPS connection.
                 if (stream != null) {
@@ -243,6 +291,7 @@ public class NetworkFragment extends Fragment {
                     connection.disconnect();
                 }
             }
+            //Log.i(TAG,result);
             return result;
         }
 
@@ -273,5 +322,53 @@ public class NetworkFragment extends Fragment {
             }
             return result;
         }
+    }
+
+    public String enviarDatos(String email, String pass){
+        URL url=null;
+        String linea="";
+        int respuesta=0;
+        StringBuilder resul=null;
+
+        try {
+            url=new URL("https://afternoon-mesa-67144.herokuapp.com/rest/login.php?log_email="+email+"&log_pass="+pass);
+            HttpURLConnection conexion=(HttpURLConnection)url.openConnection();
+            respuesta=conexion.getResponseCode();
+
+            resul=new StringBuilder();
+            if(respuesta==HttpURLConnection.HTTP_OK){
+                InputStream in=new BufferedInputStream(conexion.getInputStream());
+                BufferedReader reader=new BufferedReader(new InputStreamReader(in));
+                while((linea=reader.readLine())!=null){
+                    resul.append(linea);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return resul.toString();
+    }
+
+    public String obtenerJSON(String response){
+        String res="";
+        try {
+            if(response.equals("false")){
+                res=response;
+            }else {
+                JSONArray json = new JSONArray(response);
+                JSONObject jobj=json.getJSONObject(0);
+                res=jobj.getString("id_login");
+                //codigo=Integer.parseInt(((JSONObject)json.get(0)).getString("id_login"));
+                //Toast.makeText(this, "Codigo:"+codigo, Toast.LENGTH_SHORT).show();
+                /*if (json.length() > 0) {
+                    res = json.toString();
+                }*/
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return res;
     }
 }

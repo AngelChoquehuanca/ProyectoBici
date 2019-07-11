@@ -14,6 +14,8 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 
 public class LocalService extends Service {
 
@@ -29,6 +31,8 @@ public class LocalService extends Service {
     // Binder given to clients
     private final String TAG = "LocalService";
     private final IBinder mBinder = new LocalBinder();
+
+    //ArrayList<LatLng> listLocsToDraw; //Contendra las posiciones de la ruta
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -64,7 +68,8 @@ public class LocalService extends Service {
             mLastLocation = location;
             Log.i(TAG, "LocationChanged: "+location);
             LatLng actual = new LatLng(location.getLatitude(), location.getLongitude());
-            //send(actual);
+            //listLocsToDraw.add(actual);
+            send(actual);
             fragment.addUbication(actual);
         }
 
@@ -90,6 +95,7 @@ public class LocalService extends Service {
     @Override
     public void onDestroy()
     {
+        //Log.i(TAG, listLocsToDraw.toString());
         super.onDestroy();
         if (mLocationManager != null) {
             try {
@@ -109,6 +115,7 @@ public class LocalService extends Service {
      */
     public void startTracking(MapFragment fragment) {
         Log.i(TAG, "Iniciando Tracking");
+        //listLocsToDraw=new ArrayList<LatLng>();
 
         this.fragment = fragment;
         initializeLocationManager();
@@ -134,6 +141,7 @@ public class LocalService extends Service {
      * Detiene el Tracking
      */
     public void stopTracking() {
+
         this.onDestroy();
     }
 

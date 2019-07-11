@@ -6,10 +6,12 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -419,6 +421,9 @@ public class RouteActivity extends AppCompatActivity {
             iniciarServicio();
             mTracking = true;
             listLocsToDraw = new ArrayList<>();
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction("locationActual");
+            registerReceiver(broadcastReceiver, intentFilter);
             return;
         }
         if(!mTracking)
@@ -436,8 +441,10 @@ public class RouteActivity extends AppCompatActivity {
     }
     public void onButtonStopClick(){
         if (mBound) {
+            Log.i(TAG,listLocsToDraw.toString());
             btnTrack.setText("TRACKING");
             mService.stopTracking();
+            unregisterReceiver(broadcastReceiver);
             unbindService(mConnection);
             mBound = false;
             mTracking = false;
@@ -495,4 +502,16 @@ public class RouteActivity extends AppCompatActivity {
         int res = this.checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
+
+    /**
+     * Este BroadCast recive la ubicacion por location changed
+     */
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            LatLng actual = intent.getParcelableExtra("Data");
+            int i = Log.i(TAG, "Se ha recivido " + actual);
+            listLocsToDraw.add(actual);
+        }
+    };
 }
