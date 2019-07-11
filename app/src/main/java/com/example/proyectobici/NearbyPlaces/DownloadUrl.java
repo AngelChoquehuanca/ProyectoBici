@@ -1,4 +1,4 @@
-package com.example.proyectobici;
+package com.example.proyectobici.NearbyPlaces;
 
 import java.io.BufferedReader;
 import java.io.IOException;

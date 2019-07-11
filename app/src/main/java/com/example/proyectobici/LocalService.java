@@ -21,6 +21,8 @@ public class LocalService extends Service {
     private LocationManager mLocationManager;
     private NotificationManager notificationManager;
 
+    private MapFragment fragment;
+
     private final int LOCATION_INTERVAL = 5000;
     private final int LOCATION_DISTANCE = 0;
 
@@ -62,7 +64,8 @@ public class LocalService extends Service {
             mLastLocation = location;
             Log.i(TAG, "LocationChanged: "+location);
             LatLng actual = new LatLng(location.getLatitude(), location.getLongitude());
-            send(actual);
+            //send(actual);
+            fragment.addUbication(actual);
         }
 
         @Override
@@ -104,8 +107,10 @@ public class LocalService extends Service {
      * se empieza a hacer la solicitud de la ubicacion con los parametros
      * LOCATION_INTERVAL y LOCATION_DISTANCE
      */
-    public void startTracking() {
+    public void startTracking(MapFragment fragment) {
         Log.i(TAG, "Iniciando Tracking");
+
+        this.fragment = fragment;
         initializeLocationManager();
         mLocationListener = new LocationListener(LocationManager.GPS_PROVIDER);
 
