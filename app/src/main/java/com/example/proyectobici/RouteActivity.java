@@ -118,6 +118,8 @@ public class RouteActivity extends AppCompatActivity {
         }
     };
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -199,8 +201,7 @@ public class RouteActivity extends AppCompatActivity {
         }*/
         /*if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (location != null) {
-                txtLatitud.setText(String.valueOf(location.getLatitude()));
-                txtLongitud.setText(String.valueOf(location.getLongitude()));
+
                 getAddressFromLocation(location, getApplicationContext(), new GeoCoderHandler());
             }
         } else {
@@ -449,8 +450,15 @@ public class RouteActivity extends AppCompatActivity {
             mBound = false;
             mTracking = false;
             btnStop.setEnabled(false);
-            fragment.terminarRuta();
+            unregisterReceiver(broadcastReceiver);
+
+            // termina tracking y recibe el array list de la ruta
+            listLocsToDraw = fragment.terminarRuta();
+            guardarRuta();
         }
+    }
+    public void guardarRuta(){
+        //aqui deberia llamar al senRoute y guarddar la ruta con htt url connection
     }
     public void iniciarServicio(){
         Intent intent = new Intent(this, LocalService.class);
@@ -473,6 +481,11 @@ public class RouteActivity extends AppCompatActivity {
             listLocsToDraw = new ArrayList<>();
             mService.startTracking(fragment);
             fragment.limpiarMapa();
+
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction("locationActual");
+            registerReceiver(broadcastReceiver, intentFilter);
+
         }
 
         @Override
@@ -511,7 +524,8 @@ public class RouteActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             LatLng actual = intent.getParcelableExtra("Data");
             int i = Log.i(TAG, "Se ha recivido " + actual);
-            listLocsToDraw.add(actual);
+            txtLatitud.setText(String.valueOf(actual.latitude));
+            txtLongitud.setText(String.valueOf(actual.longitude));
         }
     };
 }
