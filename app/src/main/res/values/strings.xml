@@ -46,4 +46,6 @@
     <string name="Answer">¿No tienes una cuenta?</string>
     <string name="Ciudadpais">Arequipa, Perú</string>
     <string name="email">Ingrese email</string>
+    <string name="contraseña">Ingrese contraseña</string>
+    <string name="register">Registro</string>
 </resources>
