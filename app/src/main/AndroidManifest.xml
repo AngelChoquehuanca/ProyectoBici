@@ -40,16 +40,13 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".MiRutaActivity"
             android:label="@string/title_activity_mi_ruta"></activity>
         <activity android:name=".DispositivosBT" />
         <activity android:name=".RouteActivity"
-            android:label="@string/title_activity_route" />|
+            android:label="@string/title_activity_route" />
         <activity android:name=".SiginActivity"/>
         <activity android:name=".trackRoute" />
         <activity android:name=".NearbyPlacesActivity" />

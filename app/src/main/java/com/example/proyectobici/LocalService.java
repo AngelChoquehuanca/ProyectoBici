@@ -69,8 +69,8 @@ public class LocalService extends Service {
             Log.i(TAG, "LocationChanged: "+location);
             LatLng actual = new LatLng(location.getLatitude(), location.getLongitude());
             //listLocsToDraw.add(actual);
-            send(actual);
-            fragment.addUbication(actual);
+            send(actual); // lo envia al routeActivity, solo para verlo en los textos
+            fragment.addUbication(actual); // dibuja en el mapa
         }
 
         @Override

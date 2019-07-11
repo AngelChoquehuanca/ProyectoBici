@@ -26,6 +26,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +40,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     float miLong;
 
     private LatLng last= new LatLng(miLat, miLong);
+
+    ArrayList<LatLng> listLocsToDraw;
 
 
     public MapFragment(float latitud, float longitud){
@@ -136,9 +140,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if(po == null)
         {
             po = new PolylineOptions();
+            listLocsToDraw = new ArrayList<>();
             mMap.clear();
         }
         po.add(n);
+        listLocsToDraw.add(n); // ubicaciones
         if(last != null)
         {
             //dialog.dismiss();
@@ -148,17 +154,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                             last,
                             n
                     ));
+
             last = n;
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(n, 20));
     }
 
-    public void terminarRuta(){
+    public ArrayList<LatLng> terminarRuta(){
 
         mMap.clear();
         if(po!=null)
             mMap.addPolyline(po);
         po = null;
+        return listLocsToDraw;
     }
     public void limpiarMapa(){
         mMap.clear();
