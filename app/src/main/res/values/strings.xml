@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ProyectoBici</string>
     <string name="title_activity_nearby_places">Map</string>
-    <string name="str_edt_email">Ingrese email</string>
+    <string name="str_edt_email" translatable="false">Ingrese email</string>
     <string name="str_edt_pass">Ingrese password</string>
     <string name="str_btn_login">Iniciar Sesión</string>
     <string name="str_btn_sigin">Registrarse</string>
@@ -40,4 +40,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tracking">TRACKING</string>
     <string name="stop">STOP</string>
+    <string name="TITULO">YOUR APP CYCLING</string>
+    <string name="TITULO1">YOUR APP</string>
+    <string name="TITULO3">CYCLING</string>
+    <string name="Answer">¿No tienes una cuenta?</string>
+    <string name="Ciudadpais">Arequipa, Perú</string>
+    <string name="email">Ingrese email</string>
 </resources>
